@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Nossas Fartmácias</title>
+<link rel="stylesheet" href="styles.css"> 
+<script src="https://kit.fontawesome.com/2bc924c896.js" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+<header>
+  <div class="header-top">   
+    <div class="header-logo">
+      <span class="fa-solid fa-staff-snake fa-2xl" id="logo_icon"></span>
+      <h1 class="logo-name"><a href="index.html">Saúde Alentejo</a></h1>
+    </div>
+    <div class="searchBox">
+      <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="entre com nome ou cidade da farmacia">
+        <span class="fas fa-search" id="search-icon" onclick="searchPharmacie()"></span>
+    </form>
+    
+    </div>
+    <div class="sign-in-bttn">
+        <button id="Sign-in" onclick="login()" ><i class="fa-solid fa-user" id="sign-in-icon" ></i><a href="#">Sign Up</a></button>
+    </div>
+    <div class="modal-overlay" id="signInModal">
+      <div class="modal-content">
+          <h2>Sign In</h2>
+          <form action="#" method="post" id="signin-form">
+              <label for="username">Username:</label>
+              <input type="text" id="username" name="username" required>
+
+              <label for="password">Password:</label>
+              <input type="password" id="password" name="password" required>
+
+              <button type="button" onclick="login()">Sign In</button>
+          </form>
+          <p>Don't have an account? <a href="#">Sign Up</a></p>
+          <!-- Close button for the modal -->
+          <button id="closeSignInModal">Close</button>
+      </div>
+  </div>
+  </div>
+  
+  <div class="header-bottom">
+
+    <ul class="header-bottom-list">
+        <li class="home"><a href="index.html">Home</a></li>
+        <li class="about">Sobre</li>
+        <li class="Nossas-Farmacias"><a href="Nossas-Farmácias.html">Farmácias</a></li>
+        <li class="Saude">Saúde</li>
+    </ul>
+
+  </div>   
+</header><br>
+
+<div style="display: inline-block;">
+
+  <h1>Nossas Farmácias</h1>
+  <br>
+  <div id="farmacy-list" style=" display:block; align-self: start; margin:0 1% 0 1% ;"></div>
+  </div><br>
+  
+  <div class="buttons" style=" margin:  0 25% 0 25%; display: flex; align-items: center; justify-content: center; ">
+    <button onclick="prevPage()">Previous Page</button>
+    <button onclick="nextPage()">Next Page</button>
+  
+  <button type="button" onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+
+  var xhttp = new XMLHttpRequest();
+
+  //Variaveis Globais 
+  var pharmacies;
+  var currentPage = 1;
+  var pharmaciesPerPage = 5;
+  //document.cookie="loggedIn=false";
+
+
+
+  xhttp.open("GET", "https://magno.di.uevora.pt/tweb/t1/farmacia/list", true);
+
+
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+
+          var response = JSON.parse(this.responseText);
+
+
+          pharmacies = response.farmacias;
+          console.log(pharmacies[1]);
+
+          displayPharmacies(currentPage, pharmaciesPerPage);
+      }
+  };
+
+
+  xhttp.send();
+
+  function displayPharmacies(currentPage, pharmaciesPerPage) {
+    var start = (currentPage - 1) * pharmaciesPerPage;
+    var end = start + pharmaciesPerPage;
+
+    var farmacyListDiv = document.getElementById("farmacy-list");
+    farmacyListDiv.innerHTML = "";
+
+    for (let i = start; i < end && i < pharmacies.length; i++) {
+        var PharmacieName = pharmacies[i].name;
+        var locPharmice  = pharmacies[i].postal_code_locality ;
+        var  pharmacieId = pharmacies[i].entity_id ; 
+        var html_text = `
+        <div class="f2" style="border:solid;  border-width: 0.1em; border-color: rgb(159, 176, 167); box-shadow: 2px 2px 5px rgba(0,0,0,0.3) ; background-color:rgb(248, 248, 248); width:40%; height: 130px; margin: 10px 10px 0 0; float:left;" >
+        <h1 style="font-size: 15px;  color:#1b5633;;">${PharmacieName}</h1>
+        <p style="font-size: 12px; ">${locPharmice}</p>
+        <div style="display: flex; align-items: center;">
+            <H1 style="font-size: 15px; color:#77bd22; margin: 0;">ABERTA</H1><p style="font-size: 15px; color:#707070 ;">- até à(s) 19h00</p>
+        </div>
+        <p style="font-size: 15px;"><a href="#" onclick="showMoreInfo('${pharmacieId}')">ver mais</a></p>
+    </div>
+` ; 
+
+        farmacyListDiv.innerHTML += html_text;
+    }
+  }
+
+  function prevPage() 
+  {
+    if (currentPage > 1) 
+    {
+        currentPage--;
+        displayPharmacies(currentPage, pharmaciesPerPage);
+    }
+  }
+
+  function nextPage() 
+  {
+    if (currentPage < Math.ceil(pharmacies.length / pharmaciesPerPage)) 
+    {
+        currentPage++;
+        displayPharmacies(currentPage, pharmaciesPerPage);
+    }
+  }
+
+  function showMoreInfo(pharmacieId)
+  {
+    
+    // agora tenho que ir buscar a farmacia com esse id 
+
+    var xhttp = new XMLHttpRequest(); // we are provading the xhttp variable with functionalities for making HTTP requests from the browser to a server 8 
+    var url = "https://magno.di.uevora.pt/tweb/t1/farmacia/get/" + pharmacieId ; 
+    xhttp.open("GET",url, true ) ; 
+    
+
+
+
+    xhttp.onreadystatechange = function() // when the state of Xhttp changes... 
+    {
+      if(this.readyState == 4 && this.status == 200) 
+      {
+        var response = JSON.parse(this.responseText); // t parses a JSON string and converts it into a JavaScript object.
+ 
+        displayPharmaciesDetails(response);
+
+      }
+    } ; 
+
+    xhttp.send();
+
+  }
+
+  function displayPharmaciesDetails(response)
+  {
+
+
+    console.log(response);
+
+    var farmacyListDiv = document.getElementById("farmacy-list");
+    farmacyListDiv.innerHTML = "";
+
+    var pharmacie = response.farmacia;
+    var PharmacieName = pharmacie.name;
+    var locPharmice  = pharmacie.postal_code_locality ;
+    var services = pharmacie.services ; 
+   
+
+    var html_text = `
+    
+    <div class="f2" style="border:solid;  border-width: 0.1em; border-color: rgb(159, 176, 167); box-shadow: 2px 2px 5px rgba(0,0,0,0.3) ; background-color:rgb(248, 248, 248); width:40%; height: 200px; margin: 10px 10px 0 0; float:left;" >
+        <h1 style="margin:0; font-size: 15px;  color:#1b5633;;">${PharmacieName}</h1>
+        
+        <div style="font-size: 13px; margin: 0;">
+        <p style="margin: 7px 0 0 0;">${pharmacie.street_name}, ${pharmacie.postal_code_zone}-${pharmacie.postal_code_sufix} ${locPharmice}</p>
+        <p>${pharmacie.longitude}, ${pharmacie.latitude}</p>
+        <p>${pharmacie.services}</p>
+        </div><br>
+        <div style="display: inline; font-size: 13px;">
+            <p><i class="fa-solid fa-phone"></i> | +351 ${pharmacie.telephone}</p>
+            <p><i class="fa-solid fa-envelope"></i> | ${pharmacie.email}</p>
+        </div><br>
+
+        <div style="display: flex; align-items: center;">
+            <H1 style="font-size: 15px; color:#77bd22; margin: 0;">ABERTA</H1><p style="font-size: 15px; color:#707070 ;">- até à(s) 19h00</p>
+        </div>
+    </div>
+  ` ; 
+
+
+    
+    farmacyListDiv.innerHTML = html_text;
+
+  }
+
+  function searchPharmacie() {
+    var searchTerm = document.getElementById("searchInput").value;
+    var xhttpSearch = new XMLHttpRequest();
+    var filteredPharmacies ;
+
+
+
+if(searchTerm == "covid")
+{
+  xhttpSearch.open("GET", "https://magno.di.uevora.pt/tweb/t1/program/covid19/list", true);
+
+} else if (searchTerm == "gripe")
+{
+  xhttpSearch.open("GET", "https://magno.di.uevora.pt/tweb/t1/program/gripe/list", true);
+
+} else 
+{
+  xhttpSearch.open("GET", "https://magno.di.uevora.pt/tweb/t1/farmacia/list", true);
+}
+
+
+
+    xhttpSearch.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+        var response = JSON.parse(this.responseText);
+
+
+       if(searchTerm == "covid" || searchTerm == "gripe")
+       {
+       
+        filteredPharmacies = response.farmacias;
+        console.log(filteredPharmacies);
+        displayPharmaciesSearch(1,7,filteredPharmacies);
+
+       } else
+       {
+             filteredPharmacies = response.farmacias.filter(function (pharmacy) {
+            return containsSubstring(pharmacy.postal_code_locality, searchTerm) || containsSubstring(pharmacy.name, searchTerm);
+        });
+
+        // Display the filtered pharmacies
+        displayPharmaciesSearch(1,5,filteredPharmacies);
+       
+
+       }
+    
+    }
+};
+
+
+  
+xhttpSearch.send();
+   
+}
+
+function displayPharmaciesSearch(currentPage, pharmaciesPerPage,pharmacies) {
+    var start = (currentPage - 1) * pharmaciesPerPage;
+    var end = start + pharmaciesPerPage;
+
+    var farmacyListDiv = document.getElementById("farmacy-list");
+    farmacyListDiv.innerHTML = "";
+
+    for (let i = start; i < end && i < pharmacies.length; i++) 
+    {
+        var PharmacieName = pharmacies[i].name;
+        var locPharmice  = pharmacies[i].postal_code_locality ;
+        var  pharmacieId = pharmacies[i].entity_id ; 
+        var html_text = `
+        <div class="f2" style="border:solid;  border-width: 0.1em; border-color: rgb(159, 176, 167); box-shadow: 2px 2px 5px rgba(0,0,0,0.3) ; background-color:rgb(248, 248, 248); width:40%; height: 130px; margin: 10px 10px 0 0; float:left;" >
+        <h1 style="font-size: 15px;  color:#1b5633;;">${PharmacieName}</h1>
+        <p style="font-size: 12px; ">${locPharmice}</p>
+        <div style="display: flex; align-items: center;">
+            <H1 style="font-size: 15px; color:#77bd22; margin: 0;">ABERTA</H1><p style="font-size: 15px; color:#707070 ;">- até à(s) 19h00</p>
+        </div>
+        <p style="font-size: 15px;"><a href="#" onclick="showMoreInfo('${pharmacieId}')">ver mais</a></p>
+    </div>
+         ` ; 
+
+        farmacyListDiv.innerHTML += html_text;
+    }
+  }
+
+  function containsSubstring(mainString, subString) 
+{
+   
+    return mainString.includes(subString);
+}
+
+// modal
+
+document.getElementById('Sign-in').addEventListener('click', function () {
+        document.getElementById('signInModal').style.display = 'flex';
+    });
+
+    document.getElementById('closeSignInModal').addEventListener('click', function () {
+        document.getElementById('signInModal').style.display = 'none';
+    });
+
+    function closeSignInModal() 
+    {
+        document.getElementById('signInModal').style.display = 'none';
+    }
+
+// Login Handler
+
+function login()
+{
+        var username = document.getElementById("username").value;
+        console.log(username);
+        alert("O login foi bem sucedido!");
+        closeSignInModal();
+
+        // Set login state in sessionStorage
+        sessionStorage.setItem("loggedIn", "true");
+        sessionStorage.setItem("username", username);
+        
+
+        var signInButton = document.getElementById('Sign-in');
+        var html_text = '<div><p>Olá, <a style="color:#1b5633;" href="user-area.html">' + username + '</a></p></div>';
+        signInButton.outerHTML = html_text; 
+
+}
+
+// Check if the user is logged in
+function checkLoginStatus() 
+{
+    
+  var loggedIn = sessionStorage.getItem("loggedIn") === "true";
+
+    if (loggedIn) 
+    {
+
+        var username = sessionStorage.getItem("username");
+        var signInButton = document.getElementById('Sign-in');
+        var html_text = '<div><p>Olá, <a style="color:#1b5633;" href="user-area.html"> ' + username + ' </a></p></div>';
+        signInButton.outerHTML = html_text; 
+    }
+}
+
+function logout()
+{
+    // Clear login state from sessionStorage
+    sessionStorage.removeItem("loggedIn");
+    sessionStorage.removeItem("username");
+
+    alert("Logout sucessfully!");
+
+    var signInButton = document.getElementsByClassName('sign-in-bttn');
+    signInButton.innerHTML = '<i class="fa-solid fa-user" id="sign-in-icon"></i><a href="#">Sign Up</a>';
+
+}
+
+window.onload = checkLoginStatus; // função chamada ao carregar a pagina 
+
+
+
+</script>
+
+
+
+</body>   
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<head>
+
+<link rel="stylesheet" href="styles.css">
+<script src="https://kit.fontawesome.com/2bc924c896.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header>
+        <div class="header-top">   
+          <div class="header-logo">
+            <span class="fa-solid fa-staff-snake fa-2xl" id="logo_icon"></span>
+            <h1 class="logo-name"><a href="index.html">Saúde Alentejo</a></h1>
+          </div>
+          <div class="searchBox">
+              <form action="">
+                  <input type="text" placeholder="entre com nome ou cidade da farmacia">
+                  <span class="fas fa-search" id="search-icon"></span>
+              </form>
+          </div>
+          <div class="sign-in-bttn">
+              <button id="Sign-in"><i class="fa-solid fa-user" id="sign-in-icon"></i> Sign Up</button>
+          </div>
+      
+      
+          <div class="modal-overlay" id="signInModal">
+              <div class="modal-content">
+                  <h2>Sign In</h2>
+                  <form action="#" method="post" id="signin-form">
+                      <label for="username">Username:</label>
+                      <input type="text" id="username" name="username" required>
+      
+                      <label for="password">Password:</label>
+                      <input type="password" id="password" name="password" required>
+      
+                      <button type="button" onclick="login()">Sign In</button>
+                  </form>
+                  <p>Don't have an account? <a href="#">Sign Up</a></p>
+                  <!-- Close button for the modal -->
+                  <button id="closeSignInModal">Close</button>
+              </div>
+          </div>
+        </div>
+        
+        <div class="header-bottom">
+      
+          <ul class="header-bottom-list">
+              <li class="home"><a href="#home">Home</a></li>
+              <li class="about">Sobre</li>
+              <li class="Nossas-Farmacias"><a href="Nossas-Farmácias.html">Farmácias</a></li>
+              <li class="Saude">Saúde</li>
+          </ul>
+      
+        </div>   
+</header><br>
+
+
+<div class="marcar-agendamento" style="border:solid; display:inline-block; align-self: start;   border-width: 0.1em; border-color: rgb(159, 176, 167); box-shadow: 2px 2px 5px rgba(0,0,0,0.3) ; background-color:rgb(248, 248, 248); width:100%; height: 300px;  " >
+    <h1>Faça seu Agendamento:</h1><br>
+    <form id="myForm" method="post" action="https://magno.di.uevora.pt/tweb/t1/schedule/add">
+
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id" name="user_id" value="3"><br>
+    
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" ><br>
+    
+        <label for="date">Data:</label>
+        <input type="date" id="schedule-date" name="date" ><br>
+    
+        <label for="vaccineType">Tipo de Vacina:</label>
+        <input type="text" id="vaccineType" name="vaccineType" ><br>
+    
+        <label for="scheduleCode">código de Agendamento:</label>
+        <input type="text" id="scheduleCode" name="scheduleCode§s" ><br>
+    
+    
+        <label for="Action">Ação:</label>
+        <select name="Operation-type" id="Operation-type">
+            <option value="remove">Remover</option>
+            <option value="add">Adicionar</option>
+        </select><br>
+    
+        <label for="pharmacie">Farmácia:</label>
+        <select name="pharmacie-id" id="pharmacie-id-select">
+    
+        </select><br>
+    
+        <button type="button" onclick="removeAddSchedule()">Submit</button>
+    </form>
+</div><br><br>
+
+
+
+
+
+
+<div class="meus-agendamentos" style="border:solid; display:inline-block; align-self: start;   border-width: 0.1em; border-color: rgb(159, 176, 167); box-shadow: 2px 2px 5px rgba(0,0,0,0.3) ; background-color:rgb(248, 248, 248); width:100%; height: 300px;  " >
+    <h1>Meus Agendamentos:</h1>
+    <br>
+    <form id="myForm" method="post" action="https://magno.di.uevora.pt/tweb/t1/schedule/add">
+    
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id_list" name="user_id" value="3">
+    
+        <button type="button" onclick="list()">Submit</button>
+
+    </form>
+    <br>
+    <div id="area-agendamentos">
+        
+    </div>
+</div>
+
+
+
+<script>
+
+function displaySchedule(response)
+{
+    
+    var pharmacieId = 0 ;
+    var xhttp2 = new XMLHttpRequest(); // we are provading the xhttp variable with functionalities for making HTTP requests from the browser to a server 8 
+    var url = "https://magno.di.uevora.pt/tweb/t1/farmacia/get/" + pharmacieId ; 
+    xhttp2.open("GET",url, true ) ; 
+    var schedules = response.schedule_list ; 
+    console.log(response);
+    console.log(schedules);
+    
+    var farmacyListDiv = document.getElementById("area-agendamentos");
+    farmacyListDiv.innerHTML = "";
+
+      for (let i = 0; i < schedules.length; i++) 
+      {
+        
+          
+           var html_text = `<p>${schedules[i]}</p><br>` ; 
+
+           farmacyListDiv.innerHTML += html_text;
+      }
+
+}
+
+function list()
+{
+
+    var xhttp = new XMLHttpRequest();
+    
+    xhttp.open("POST","https://magno.di.uevora.pt/tweb/t1/schedule/list",true);
+    xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    xhttp.onreadystatechange = function() 
+    {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+
+          var response = JSON.parse(this.responseText);
+          displaySchedule(response);
+
+      }
+    };
+
+
+    xhttp.send("user_id="+document.getElementById("user_id_list").value);
+
+
+}
+
+function removeAddSchedule()
+{
+    var xhttp = new XMLHttpRequest();
+    
+    if(document.getElementById('Operation-type').value=="add")
+    {
+        xhttp.open("POST","https://magno.di.uevora.pt/tweb/t1/schedule/add",true);
+        document.getElementById('scheduleCode').value=="tw666";
+
+    } else // remove scheduleCode
+    {
+        xhttp.open("POST","https://magno.di.uevora.pt/tweb/t1/schedule/remove",true);
+
+    }
+    
+    
+    xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    xhttp.onreadystatechange = function() 
+    {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+
+          var response = JSON.parse(this.responseText);
+          console.log(response);
+          alert(response.status);
+
+      }
+    };
+
+
+    if(document.getElementById('Operation-type').value=="add")
+    {
+  
+        xhttp.send("schedule_code=tw666&user_id="+document.getElementById('user_id').value
+        +"&vaccine="+document.getElementById('vaccineType').value
+        +"&entity_id="+document.getElementById('pharmacie-id-select').value
+        +"&schedule_date="+document.getElementById('schedule-date').value);
+        
+    } else
+    {
+   
+        xhttp.send("schedule_code="+ document.getElementById('scheduleCode').value +"&user_id="+document.getElementById('user_id').value);
+    }
+
+
+}
+
+function pharmaciesDisplay()
+{
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET","https://magno.di.uevora.pt/tweb/t1/farmacia/list",true);
+    var pharmacies ;
+
+    xhttp.onreadystatechange = function() 
+    {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+
+          var response = JSON.parse(this.responseText);
+          pharmacies = response.farmacias;
+          display(pharmacies);
+
+      }};
+
+      xhttp.send();
+
+}
+
+function display(pharmacies) 
+{
+    var farmacyListDiv = document.getElementById("pharmacie-id-select");
+    farmacyListDiv.innerHTML = "";
+
+    for (let i = 0; i < pharmacies.length; i++) 
+    {
+        var PharmacieName = pharmacies[i].name;
+        var locPharmice = pharmacies[i].postal_code_locality;
+        var pharmacieId = pharmacies[i].entity_id;
+
+        var html_text = `<option value="${pharmacieId}">${PharmacieName}</option>`;
+        farmacyListDiv.innerHTML += html_text;
+    }
+}
+
+function checkLoginStatus() 
+{
+ 
+    var loggedIn = sessionStorage.getItem("loggedIn") === "true";
+    
+    if (loggedIn) 
+    {
+        console.log("logged");
+        var username = sessionStorage.getItem("username");
+        var signInButton = document.getElementById('Sign-in');
+        var html_text = '<div><p>Olá, <a style="color:#1b5633;" href="user-area.html">' + username + '</a></p></div>';
+        signInButton.outerHTML = html_text; 
+    }
+}
+
+window.onload = function () 
+{
+    pharmaciesDisplay();
+    checkLoginStatus();
+};
+
+</script>
+</body>
+

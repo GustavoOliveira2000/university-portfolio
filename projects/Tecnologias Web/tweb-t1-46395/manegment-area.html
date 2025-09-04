@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/2bc924c896.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-top">   
+          <div class="header-logo">
+            <span class="fa-solid fa-staff-snake fa-2xl" id="logo_icon"></span>
+            <h1 class="logo-name"><a href="index.html">Saúde Alentejo</a></h1>
+          </div>
+          <div class="searchBox">
+              <form action="">
+                  <input type="text" placeholder="entre com nome ou cidade da farmacia">
+                  <span class="fas fa-search" id="search-icon"></span>
+              </form>
+          </div>
+          <div class="sign-in-bttn">
+              <button id="Sign-in"><i class="fa-solid fa-user" id="sign-in-icon"></i> Sign Up</button>
+          </div>
+      
+      
+          <div class="modal-overlay" id="signInModal">
+              <div class="modal-content">
+                  <h2>Sign In</h2>
+                  <form action="#" method="post" id="signin-form">
+                      <label for="username">Username:</label>
+                      <input type="text" id="username" name="username" required>
+      
+                      <label for="password">Password:</label>
+                      <input type="password" id="password" name="password" required>
+      
+                      <button type="button" onclick="login()">Sign In</button>
+                  </form>
+                  <p>Don't have an account? <a href="#">Sign Up</a></p>
+                  <!-- Close button for the modal -->
+                  <button id="closeSignInModal">Close</button>
+              </div>
+          </div>
+        </div>
+        
+        <div class="header-bottom">
+      
+          <ul class="header-bottom-list">
+              <li class="home"><a href="#home">Home</a></li>
+              <li class="about">Sobre</li>
+              <li class="Nossas-Farmacias"><a href="Nossas-Farmácias.html">Farmácias</a></li>
+              <li class="Saude">Saúde</li>
+          </ul>
+      
+        </div>   
+</header>
+
+<div id="covid">
+    <br>
+    <h1>Farmacias Covid:</h1>
+    <br>
+    <div id="covid-display-section">
+
+    </div>
+</div>
+<div id="gripe">
+    <br>
+    <h1>Farmacias Gripe:</h1>
+    <br>
+    <div id="gripe-display-section">
+
+    </div>
+</div>
+
+
+<div id="addRemovePharmacie">
+ <br><h1>Pharmacie-Manegement:</h1><br> 
+
+<div id="Pharmacie-Manegement-form">
+    <form id="myForm" method="post" action="your_server_endpoint_url">
+        
+
+        <label for="entity_id">Entity ID:</label>
+        <input type="text" id="entity_id" name="entity_id" >
+        <br>
+   
+        <label for="action">Action:</label>
+        <select name="Operation-type" id="Operation-type" >
+            <option value="remove">Remove</option>
+            <option value="add">Add</option>
+        </select>
+        <br>
+        <label for="Service">Service:</label>
+        <select name="Service" id="Service" required>
+            <option value="covid-19">Covid-19</option>
+            <option value="gripe">Gripe</option>
+        </select>
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+ 
+<button onclick="removeAddPharmacie()">test</button>
+
+</div><br><br>
+
+<div id="pharmacies-graphic">
+<h1>Graphic</h1><br>
+<canvas id="pharmaciesChart" width="300" height="200"></canvas>
+</div>
+
+<script> 
+
+function removeAddPharmacie()
+{
+    var xhttp = new XMLHttpRequest();
+    console.log("ok");
+    
+    if(document.getElementById('Operation-type').value == "add")
+    {
+        xhttp.open("POST","https://magno.di.uevora.pt/tweb/t1/program/add",true);
+
+
+    } else // remove pharmacie
+    {
+        xhttp.open("POST","https://magno.di.uevora.pt/tweb/t1/program/remove",true);
+
+    }
+    
+    
+    xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    xhttp.onreadystatechange = function() 
+    {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+
+          var response = JSON.parse(this.responseText);
+          console.log(response);
+          alert(response.status);
+
+      }
+    };
+
+
+    if(document.getElementById('Operation-type').value == "add")
+    {
+        xhttp.send("services="+document.getElementById('Service').value+"&entity_id="+document.getElementById('entity_id').value+""); // recomeçar por aqui 
+
+    } else
+    {
+        xhttp.send("entity_id="+document.getElementById('entity_id').value);
+    }
+
+
+}
+
+function displayPharmacies(displayTerm)
+{
+    var xhttpSearch = new XMLHttpRequest();
+    var filteredPharmacies ;
+
+
+
+if(displayTerm == "covid")
+{
+    xhttpSearch.open("GET", "https://magno.di.uevora.pt/tweb/t1/program/covid19/list", true);
+
+} else if (displayTerm == "gripe")
+{
+  xhttpSearch.open("GET", "https://magno.di.uevora.pt/tweb/t1/program/gripe/list", true);
+
+} else if(displayTerm == "graph")
+{
+    xhttpSearch.open("GET", "https://magno.di.uevora.pt/tweb/t1/farmacia/list", true);
+}
+
+xhttpSearch.onreadystatechange = function () 
+{
+    if (this.readyState == 4 && this.status == 200) 
+    {
+        var response = JSON.parse(this.responseText);
+
+
+       
+        filteredPharmacies = response.farmacias;
+     
+
+        if(displayTerm == "graph")
+        {
+            displayPharmaciesGraph(filteredPharmacies);
+        }else
+        {
+            display(filteredPharmacies,displayTerm);
+        }
+
+
+       }
+    
+    };
+
+ xhttpSearch.send();
+
+}
+
+function display(filteredPharmacies,displayTerm)
+{
+
+    if(displayTerm == "covid")
+    {   
+        var farmacyListDiv = document.getElementById("covid-display-section");
+        farmacyListDiv.innerHTML = "";
+
+    } else if (displayTerm == "gripe")
+    {   
+        var farmacyListDiv = document.getElementById("gripe-display-section");
+        farmacyListDiv.innerHTML = "";
+    }
+
+    
+
+    for (let i = 0; i < filteredPharmacies.length; i++) 
+    {
+        var PharmacieName = filteredPharmacies[i].name;
+        var locPharmice = filteredPharmacies[i].postal_code_locality;
+        var pharmacieId = filteredPharmacies[i].entity_id;
+        var html_text = `<p>  ENTITY_ID : ${pharmacieId}, POSTAL_CODE: ${locPharmice},  NAME: ${PharmacieName}  </p><br>`;
+        farmacyListDiv.innerHTML += html_text;
+    }
+
+}
+
+function checkLoginStatus() 
+{
+    var loggedIn = sessionStorage.getItem("loggedIn") === "true";
+    
+    if (loggedIn) 
+    {
+    
+        var username = sessionStorage.getItem("username");
+        var signInButton = document.getElementById('Sign-in');
+        var html_text = '<div><p>Olá, <a style="color:#1b5633;" href="user-area.html">' + username + '</a></p></div>';
+        signInButton.outerHTML = html_text; 
+    }
+}
+
+
+function displayPharmaciesGraph(pharmacies) {
+            // Group pharmacies by location
+            var pharmaciesByLocation = {};
+            pharmacies.forEach(pharmacy => {
+                if (!pharmaciesByLocation[pharmacy.postal_code_locality]) {
+                    pharmaciesByLocation[pharmacy.postal_code_locality] = [];
+                }
+                pharmaciesByLocation[pharmacy.postal_code_locality].push(pharmacy);
+            });
+
+            // Prepare data for the chart
+            var locations = Object.keys(pharmaciesByLocation);
+            var counts = locations.map(location => pharmaciesByLocation[location].length);
+
+            // Create the bar chart
+            var ctx = document.getElementById('pharmaciesChart').getContext('2d');
+            var pharmaciesChart = new Chart(ctx, 
+            {
+                type: 'bar',
+                data: {
+                    labels: locations,
+                    datasets: 
+                    [{
+                        label: 'Pharmacies by Location',
+                        data: counts,
+                        backgroundColor: 'rgba(27, 86, 51, 0.2)',
+                        borderColor: 'rgba(27, 86, 51, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: 
+                {
+                    scales: 
+                    {
+                        y: 
+                        {
+                            beginAtZero: true,
+                            
+                        }
+                    }
+                }
+            });
+        }
+
+window.onload = function () 
+{
+    displayPharmacies("covid");
+    displayPharmacies("gripe");
+    displayPharmacies("graph");
+    
+    checkLoginStatus();
+};
+
+</script>
+
+        
+</body>
+</html>

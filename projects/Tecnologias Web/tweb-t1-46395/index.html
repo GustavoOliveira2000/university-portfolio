@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Saúde Alentejo</title>
+<link rel="stylesheet" href="styles.css"> 
+<script src="https://kit.fontawesome.com/2bc924c896.js" crossorigin="anonymous"></script>
+<script src="img-animation.js"></script>
+
+</head>
+<body>
+
+<header>
+  <div class="header-top">   
+    <div class="header-logo">
+      <span class="fa-solid fa-staff-snake fa-2xl" id="logo_icon"></span>
+      <h1 class="logo-name"><a href="index.html">Saúde Alentejo</a></h1>
+    </div>
+    <div class="searchBox">
+        <form action="">
+            <input type="text" placeholder="entre com nome ou cidade da farmacia">
+            <span class="fas fa-search" id="search-icon"></span>
+        </form>
+    </div>
+    <div class="sign-in-bttn">
+        <button id="Sign-in"><i class="fa-solid fa-user" id="sign-in-icon"></i> Sign Up</button>
+    </div>
+
+
+    <div class="modal-overlay" id="signInModal">
+        <div class="modal-content">
+            <h2>Sign In</h2>
+            <form action="#" method="post" id="signin-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="button" onclick="login()">Sign In</button>
+            </form>
+            <p>Don't have an account? <a href="#">Sign Up</a></p>
+            <!-- Close button for the modal -->
+            <button id="closeSignInModal">Close</button>
+        </div>
+    </div>
+  </div>
+  
+  <div class="header-bottom">
+
+    <ul class="header-bottom-list">
+        <li class="home"><a href="#home">Home</a></li>
+        <li class="about"><a href="#about">Sobre</a></li>
+        <li class="Nossas-Farmacias"><a href="Nossas-Farmácias.html">Farmácias</a></li>
+        <li class="Saude"><a href="#about">Saúde</a></li>
+    </ul>
+
+  </div>   
+</header>
+
+<div class="home" id="home">
+ <div class="caroussel">
+    <div class="image-container" id="imgs">
+        <a><img src="images/banner_copy_unico.png" alt="first-img" class="image-caroussel" id="image-caroussel-1"/></a>
+        <a><img src="images/afr-sns-vacinacao-anf-bannersite-1600x500px_1.jpg" alt="first-img" class="image-caroussel" id="image-caroussel-2"/></a>
+        <a href="user-area.html" ><img src="images/banner_agende_aqui_desktop.png" alt="first-img" class="image-caroussel" id="image-caroussel-3" /></a>
+    </div>
+ </div>
+
+</div><br>  
+
+<div class="nossasFarmacias">
+    <a href="Nossas-Farmácias.html"><h1>Nossas Farmácias</h1></a><br>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat perspiciatis fugiat dolores dolore molestias distinctio provident, reiciendis dolorem neque optio nesciunt sed cum quos vel vero blanditiis dolor ex possimus. </p>
+    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quos veniam exercitationem at, tempore soluta, molestias vitae, dolorum nostrum debitis ea numquam praesentium quae tempora est sed. Error deleniti iure id?</p>
+</div><br>
+
+<div class="Saude">
+ <h1>Saúde-Content</h1><br>
+ <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Neque voluptatibus, dolor illo necessitatibus ipsa eos tenetur, dolores autem est expedita porro consectetur maxime id ratione provident! Corporis necessitatibus illum culpa.</p>
+    
+</div><br>
+
+<div style="font-size: 13px;" class="about">
+    <h1>About</h1><br>
+    <p>Gustavo Oliveira, l46395</p><br>
+    <p><i class="fa-solid fa-envelope"></i> | l46395@alunos.uevora.pt</p>
+    <p><i class="fa-solid fa-phone"></i> | +351 919231900</p>
+    <p><a href="https://www.farmaciasportuguesas.pt">Farmacias Portuguesas</a></p>
+
+</div><br><br>
+
+<button type="button" onclick="logout()">Logout</button><br><br>
+<p style="font-size: 13px;"><a href="manegment-area.html">manegment-area</a></p>
+
+
+
+<script>
+
+
+
+    // JavaScript to open and close the sign-in modal
+document.getElementById('Sign-in').addEventListener('click', function () {
+        document.getElementById('signInModal').style.display = 'flex';
+    });
+
+document.getElementById('closeSignInModal').addEventListener('click', function () {
+        document.getElementById('signInModal').style.display = 'none';
+    });
+
+function closeSignInModal() 
+    {
+        document.getElementById('signInModal').style.display = 'none';
+    }
+
+function login()
+{
+        var username = document.getElementById("username").value;
+        console.log(username);
+        alert("O login foi bem sucedido!");
+        closeSignInModal();
+
+            // Set login state in sessionStorage
+        sessionStorage.setItem("loggedIn", "true");
+        sessionStorage.setItem("username", username);
+        
+
+
+        var signInButton = document.getElementById('Sign-in');
+        var html_text = '<div><p>Olá, <a href="user-area.html" style="color:#1b5633;" >' + username + '</a></p></div>';
+        signInButton.outerHTML = html_text; 
+}
+
+function checkLoginStatus() 
+{
+    var loggedIn = sessionStorage.getItem("loggedIn") === "true";
+    
+    if (loggedIn) 
+    {
+
+        var username = sessionStorage.getItem("username");
+        var signInButton = document.getElementById('Sign-in');
+        var html_text = '<div><p>Olá, <a href="user-area.html" style="color:#1b5633;">' + username + '</a></p></div>';
+        signInButton.outerHTML = html_text; 
+    }
+}
+
+
+function logout()
+{
+    console.log("Logout");
+
+    sessionStorage.removeItem("loggedIn");
+    sessionStorage.removeItem("username");
+    alert("Logout sucessfully!");alert("Logout sucessfully!");
+
+    var signInButton = document.getElementsByClassName('sign-in-bttn');
+    signInButton.outerHTML = '<div class="new"><i class="fa-solid fa-user" id="sign-in-icon"></i><a href="#">Sign Up</a></div>';
+  
+}
+
+window.onload = checkLoginStatus; // função chamada ao carregar a pagina 
+
+
+</script>
+
+
+
+</body>   
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

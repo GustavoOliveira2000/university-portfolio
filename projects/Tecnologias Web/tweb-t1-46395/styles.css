@@ -1,0 +1,255 @@
+* {
+    padding: 0%;
+    margin: 0%;
+}
+
+body
+{
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+a
+{
+    text-decoration: none;
+}
+
+a:visited
+{
+    color: black;
+}
+
+a:link
+{
+    color: black;
+}
+
+
+header
+{
+    position: relative;
+    width: 100%;
+    height: 150px;
+    background-color: aquamarine;
+}
+
+/* Header-Top */
+
+.header-top
+{
+    position: relative;
+    width: 100%;
+    height: 75px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+
+}
+
+.header-logo /* estamos a referir ao div, ao espaço,  que guarda o icone+logo */
+{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0% 0% 0% 5%  ; /* T R B L */
+    width: 25%; /*20% de q ??? R: NOTAS, basicamente dos 100%w ou viewport */
+    justify-content: space-evenly;
+}
+
+
+.header-logo span /* span é o elemento html que recebe o icone  */
+{
+    font-size: 35px;
+}
+
+.header-logo h1
+{
+    margin-left: 5%;
+    
+}
+
+.searchBox  /* divisão que guarda a searchbox   */
+{
+
+    width: 50%;
+    padding: 0% 0%; 
+    height: 100%;
+    display: flex;
+    align-items: center; /* atua sobre o Y-Axis */
+    justify-content: space-evenly; /* atua sobre X-Axis . basicamente estamos a centrar o obj */
+   
+}
+
+.sign-in-bttn
+{
+  width: 25%;
+  padding: 0% 2%; 
+  
+}
+
+.sign-in-bttn #Sign-in
+{
+   color: black;
+   width: 100px;
+   height: 30px;
+   border-style: solid;
+   border-radius: 3px;
+   border-color: rgb(181, 237, 193);
+   background-color: rgb(181, 237, 193);
+   cursor: pointer;
+}
+
+.sign-in-bttn #sign-in-icon
+{
+    position: relative;
+    left: -5%;
+    padding: 0% 0% 0% 0%  ; /* T R B L */
+}
+
+.searchBox input
+{
+     width: 400px;
+     height: 30px;
+     border-radius: 3px;
+     border-color: black;
+     text-indent: 10px ;
+     font-size: 15px;
+}
+
+.searchBox #search-icon
+{
+    position: relative;
+    left: -27px;
+    font-size: 15px;
+    cursor: pointer;
+    z-index: 221;
+}
+
+/* Header-Bottom */
+
+.header-bottom
+{
+    background-color: rgb(252, 252, 252);
+    width: 100%;
+    height: 75px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.header-bottom-list
+{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-block: 0;    
+}
+
+ul li
+{
+
+    display: inline-block;
+    margin-left: 5%;
+    font-size: 25px;
+
+
+}
+
+.caroussel
+{
+
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3) ;
+    height: 27.2vw;
+    width: 100%;
+    overflow: hidden;
+}
+
+.image-container
+{
+
+    display: flex;
+    flex-direction: column; 
+    transform: translateY(0);
+    transition: transform 0.5s ease-in-out ;
+
+}
+
+.image-caroussel /* the images from carousel */
+{
+    width: 100%;
+    height: 27.2vw;
+    object-fit:cover ;
+
+}
+
+       /* Style for the modal overlay */
+.modal-overlay 
+{
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; 
+}
+
+    /* Style for the modal content */
+.modal-content 
+{
+        background: #f8f8f8;
+        padding: 20px;
+        border-radius: 5px;
+
+}
+
+@media screen and (max-width: 932px) 
+{
+
+    .searchBox input
+    {
+        width: 250px;
+        font-size: 12px;
+    }
+    .searchBox #search-icon
+    {
+        left: -8%;
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 611px) 
+{
+
+    .searchBox input
+    {
+        width: 200px;
+        font-size: 9px;
+    }
+    .searchBox #search-icon
+    {
+        left: -8%;
+        font-size: 10px;
+    }
+    .sign-in-bttn #Sign-in
+    {
+        width: 75px;
+    }
+    h1
+    {
+        font-size: 1.3em;
+    }
+    ul .Saude
+    {
+        display: none;
+    }
+
+    body
+    {
+        font-size: 12px;
+    }
+
+}
