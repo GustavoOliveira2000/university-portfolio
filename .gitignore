@@ -1,0 +1,40 @@
+# General
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.envrc
+
+# Java
+*.class
+target/
+.gradle/
+build/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.spotlight-v100
+.trashes
+
+# Data & outputs
+data/
+outputs/
+*.ipynb_checkpoints
