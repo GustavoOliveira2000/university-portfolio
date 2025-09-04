@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animação X3D</title>
+    <!-- Incluindo o X3DOM para renderizar X3D no navegador -->
+    <script src="https://www.x3dom.org/download/x3dom.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://www.x3dom.org/download/x3dom.css"/>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Azul claro */
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .x3d-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+        }
+    </style>
+</head>
+<body>
+    <h1>Animação 3D - X3D - Gustavo Oliveira - l463956</h1>
+    <div class="x3d-container">
+        <x3d width="800px" height="600px">
+            <scene>
+
+                  <!-- Base de areia -->
+                  <Transform translation="0 -1 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.3 0.6 1"/> <!-- Cor de areia -->
+                        </Appearance>
+                        <Box size="4 0.1 4"/> <!-- Base da areia -->
+                    </Shape>
+                </Transform>
+
+                
+                <!-- Ondas -->
+                <Transform translation="0 -0.8 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="1 0.9 0.6"/> <!-- Cor azul para ondas -->
+                        </Appearance>
+                        <IndexedFaceSet coordIndex="0 1 2 3 -1">
+                            <Coordinate point="-2 -0.1 -1  -2 -0.1 1  2 -0.1 1  2 -0.1 -1"/>
+                        </IndexedFaceSet>
+                    </Shape>
+                </Transform>
+  
+                  <!-- Guarda-sol -->
+                  <Transform translation="0 0 0">
+                      <!-- Haste do guarda-sol -->
+                      <Shape>
+                          <Appearance>
+                              <Material diffuseColor="0.6 0.3 0.1"/> <!-- Cor marrom -->
+                          </Appearance>
+                          <Cylinder height="2" radius="0.05"/> <!-- Haste -->
+                      </Shape>
+  
+                      <!-- Cobertura do guarda-sol -->
+                      <Transform translation="0 1 0">
+                          <Shape>
+                              <Appearance>
+                                  <Material diffuseColor="1 0 0"/> <!-- Cor vermelha -->
+                              </Appearance>
+                              <Cone height="1" bottomRadius="1.5"/> <!-- Cone do guarda-sol -->
+                          </Shape>
+                      </Transform>
+                  </Transform>
+
+
+
+            
+            </scene>
+        </x3d>
+    </div>
+</body>
+</html>

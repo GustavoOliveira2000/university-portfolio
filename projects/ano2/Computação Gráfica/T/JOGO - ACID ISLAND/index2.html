@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acid Island</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            margin: 10px;
+        }
+        #game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        svg {
+            background-color: #88c;
+            border: 2px solid #fff;
+        }
+        .island {
+            fill: #6c3;
+            stroke: #fff;
+            stroke-width: 2;
+        }
+        .player {
+            fill: #f00;
+        }
+    </style>
+</head>
+<body>
+    <h1>Acid Island  - Gustavo Oliveira - l463956 </h1>
+    <p>Mantenha-se nas ilhas para não cair no ácido!</p>
+    <div id="game-container">
+        <svg id="game-area" width="500" height="500">
+            <!-- Ilhas -->
+            <circle class="island" id="island1" cx="150" cy="150" r="50"></circle>
+            <circle class="island" id="island2" cx="350" cy="350" r="70"></circle>
+            <circle class="island" id="island3" cx="50" cy="100" r="40"></circle>
+            <circle class="island" id="island3" cx="50" cy="100" r="40"></circle>
+            <!-- Jogador -->
+            <circle class="player" id="player" cx="150" cy="150" r="10"></circle>
+        </svg>
+    </div>
+    <p id="score">Pontuação: 0</p>
+    <script>
+        
+        // Configurações iniciais
+        const player = document.getElementById('player');
+        const islands = [
+            { element: document.getElementById('island1'), lifetime: 10 },
+            { element: document.getElementById('island2'), lifetime: 20 },
+            {element: document.getElementById('island3') , lifetime: 12 }
+        ];
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score');
+
+        let score = 0;
+        let playerX = 150;
+        let playerY = 150;
+        let minRadius = 30;
+        let maxRadius = 100;
+
+        // Controle do jogador
+        document.addEventListener('keydown', (e) => 
+        {
+            const step = 10;
+            if (e.key === 'w') playerY -= step; // Cima
+            if (e.key === 'a') playerX -= step; // Esquerda
+            if (e.key === 's') playerY += step; // Baixo
+            if (e.key === 'd') playerX += step; // Direita
+
+            // Atualiza posição do jogador
+            player.setAttribute('cx', playerX);
+            player.setAttribute('cy', playerY);
+
+            checkCollision();
+        });
+
+        // Verifica se o jogador está sobre alguma ilha
+        function checkCollision() {
+        let onIsland = false;
+
+    islands.forEach(({ element }) => {
+        if (!element.parentNode) return; // Ignora ilhas que não estão no SVG
+
+        const islandX = parseFloat(element.getAttribute('cx'));
+        const islandY = parseFloat(element.getAttribute('cy'));
+        const islandRadius = parseFloat(element.getAttribute('r'));
+        const distance = Math.sqrt(
+            Math.pow(playerX - islandX, 2) + Math.pow(playerY - islandY, 2)
+        );
+
+        if (distance <= islandRadius) {
+            onIsland = true; // O jogador está sobre uma ilha
+        }
+    });
+
+    if (!onIsland) {
+        alert(`Jogo terminado! Sua pontuação foi: ${score}`);
+        resetGame();
+    }
+}
+
+        // Reinicia o jogo
+        function resetGame() 
+        {
+            score = 0;
+            scoreDisplay.textContent = `Pontuação: ${score}`;
+            playerX = 150;
+            playerY = 150;
+            player.setAttribute('cx', playerX);
+            player.setAttribute('cy', playerY);
+        }
+
+        function checkLifetime(islandObj, index) 
+        {
+        islandObj.lifetime -= 1;
+
+            if (islandObj.lifetime <= 0) 
+            {
+                // Verifica se há intersecção antes de remover
+                if (!checkIntersection(islandObj, index)) {
+                    
+                    if(islands.length < 15)
+                    createIntersectedIsland(islandObj);
+                // Estende o tempo de vida da ilha atual
+                    islandObj.lifetime += 7;
+                } else {
+                // Remove a ilha se já teve o lifetime estendido
+                    islandObj.element.remove();
+                    islandObj.lifetime = Math.random() * 10 + 10; // Redefine tempo de vida
+                }
+            }
+        }
+
+        function checkIntersection(islandObj, index) 
+        {
+            const islandX = parseFloat(islandObj.element.getAttribute('cx'));
+            const islandY = parseFloat(islandObj.element.getAttribute('cy'));
+            const islandRadius = parseFloat(islandObj.element.getAttribute('r'));
+
+            let hasIntersection = false;
+
+             islands.forEach((otherIslandObj, otherIndex) => {
+                if (index === otherIndex || !otherIslandObj.element.parentNode) return;
+
+                const otherX = parseFloat(otherIslandObj.element.getAttribute('cx'));
+                const otherY = parseFloat(otherIslandObj.element.getAttribute('cy'));
+                const otherRadius = parseFloat(otherIslandObj.element.getAttribute('r'));
+                const distance = Math.sqrt(
+                 Math.pow(islandX - otherX, 2) + Math.pow(islandY - otherY, 2));
+
+                if (distance <= islandRadius + otherRadius) {
+                    hasIntersection = true;
+                }
+            });
+
+            return hasIntersection;
+        }
+
+        function createIntersectedIsland(islandObj) 
+        {
+            const islandX = parseFloat(islandObj.element.getAttribute('cx'));
+            const islandY = parseFloat(islandObj.element.getAttribute('cy'));
+            const newRadius = Math.random() * (maxRadius - minRadius) + minRadius;
+
+            const newIsland = {
+                element: document.createElementNS('http://www.w3.org/2000/svg', 'circle'),
+                lifetime: Math.random() * 10 + 10
+            };
+
+            newIsland.element.setAttribute('cx', islandX + newRadius / 2); // Posição próxima para intersecção
+            newIsland.element.setAttribute('cy', islandY + newRadius / 2);
+            newIsland.element.setAttribute('r', newRadius);
+            newIsland.element.setAttribute('fill', '#6c3');
+            newIsland.element.setAttribute('stroke', '#fff');
+            newIsland.element.setAttribute('stroke-width', 2);
+            newIsland.element.setAttribute('data-growing', 'true');
+
+            islands.push(newIsland);
+            gameArea.appendChild(newIsland.element);
+        }
+
+        function updateRadius(islandObj) 
+        {
+            const element = islandObj.element;
+            let radius = parseFloat(element.getAttribute('r'));
+            const isGrowing = element.getAttribute('data-growing') === 'true';
+
+            if (radius >= maxRadius) {
+                element.setAttribute('data-growing', 'false');
+            } else if (radius <= minRadius) {
+                element.setAttribute('data-growing', 'true');
+            }
+
+            radius += isGrowing ? 1 : -1;
+            element.setAttribute('r', radius);
+        }
+
+        function updateIslands() 
+        {
+            islands.forEach((islandObj, index) => {
+            // Inicializa ilhas no SVG, se ainda não renderizadas
+            if (!islandObj.element.parentNode) 
+            {
+                gameArea.appendChild(islandObj.element);
+                islandObj.element.setAttribute('cx', Math.random() * 400 + 50);
+                islandObj.element.setAttribute('cy', Math.random() * 400 + 50);
+                islandObj.element.setAttribute('r', Math.random() * (maxRadius - minRadius) + minRadius);
+                islandObj.element.setAttribute('fill', '#6c3');
+                islandObj.element.setAttribute('stroke', '#fff');
+                islandObj.element.setAttribute('stroke-width', 2);
+                islandObj.element.setAttribute('data-growing', 'true');
+            }
+
+            // Checa o tempo de vida da ilha
+            checkLifetime(islandObj, index);
+
+            // Atualiza o raio da ilha (crescimento/redução)
+            updateRadius(islandObj);
+            });
+
+            gameArea.appendChild(player);
+        }
+
+        // Incrementa a pontuação
+        function incrementScore() {
+    let onIsland = false;
+
+    islands.forEach(({ element }) => {
+        if (!element.parentNode) return; // Ignora ilhas não visíveis
+
+        const islandX = parseFloat(element.getAttribute('cx'));
+        const islandY = parseFloat(element.getAttribute('cy'));
+        const islandRadius = parseFloat(element.getAttribute('r'));
+        const distance = Math.sqrt(
+            Math.pow(playerX - islandX, 2) + Math.pow(playerY - islandY, 2)
+        );
+
+        if (distance <= islandRadius) {
+            onIsland = true;
+        }
+    });
+
+    if (onIsland) {
+        score++; // Incrementa apenas se o jogador estiver sobre uma ilha
+        scoreDisplay.textContent = `Pontuação: ${score}`;
+    }
+}
+
+        // Ciclo do jogo
+        setInterval(() => 
+        {
+            updateIslands();
+            incrementScore();
+        }, 200);
+    
+    </script>
+</body>
+</html>

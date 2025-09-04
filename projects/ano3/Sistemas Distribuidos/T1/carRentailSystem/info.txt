@@ -1,0 +1,25 @@
+Comandos java : 
+
+
+Compilar código a partir da classe source : 
+
+javac t1_sd/entidades/*.java → o operador *.java indica que todas as classes nesse directório 				       vão ser compiladas 
+
+Executar código, a partir do src, com o caminho =  "t1_sd/entidades" : 
+
+java t1_sd.entidades.TestaEntidades → a classe a ser executada é "TestaEntidades"
+
+Compilar projeto : 
+
+Primeiro : 
+
+javac -d build src/t1_sd/entidades/*.java src/t1_sd/remoto/*.java src/t1_sd/servidor/*.java src/t1_sd/cliente/*.java
+
+
+Executar - O servidor :
+
+java -cp build t1_sd.servidor.Servidor
+
+Executar - O Cliente :
+
+java -cp build t1_sd.cliente.ClienteGeral

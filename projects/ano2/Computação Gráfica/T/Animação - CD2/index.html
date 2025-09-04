@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animação C2D - Gustavo Oliveira - 463956</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #87CEEB; /* Céu azul claro */
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #scene-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        svg {
+            border: 2px solid #333;
+            background-color: #fff; /* Fundo branco */
+        }
+        .background {
+            fill: #6c9; /* Cor verde para o fundo */
+        }
+        .barber-pole {
+            fill: url(#stripe-pattern);
+        }
+        .barber-base {
+            fill: #999; /* Cor cinza para as bases */
+        }
+        .companion {
+            fill: #FF4500; /* Cor laranja para o companheiro */
+            stroke: #fff;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Animação C2D - Gustavo Oliveira - l463956</h1>
+    <div id="scene-container">
+        <svg id="scene" width="400" height="400">
+            <!-- Fundo -->
+            <rect class="background" width="100%" height="100%"></rect>
+
+            <!-- Modelo da Figura (Poste de Barbearia) -->
+            <!-- Parte Superior -->
+            <rect class="barber-base" x="150" y="60" width="100" height="20" rx="10"></rect>
+            <!-- Poste -->
+    <!-- Fundo Branco para o Barber Pole -->
+    <rect class="barber-pole-background" x="160" y="80" width="80" height="200" fill="#FFFFFF"></rect>
+    <!-- Listras -->
+    <rect class="barber-pole" x="160" y="80" width="80" height="200" fill="url(#stripe-pattern)"></rect>
+    <!-- Parte Inferior -->
+    <rect class="barber-base" x="150" y="280" width="100" height="20" rx="10"></rect>
+
+            <!-- Padrão do Poste -->
+            <defs>
+                <pattern id="stripe-pattern" width="30" height="30" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <rect id="stripe-pattern-1" x="0" width="10" height="30" fill="#FF0000"></rect>
+                    <rect id="stripe-pattern-3" x="20" width="10" height="30" fill="#0000FF"></rect>
+                </pattern>
+            </defs>
+
+            <!-- Objeto Companheiro (Estático) -->
+            <circle class="companion" id="companion" cx="300" cy="200" r="20"></circle>
+        </svg>
+    </div>
+    <script>
+        // Seleciona os elementos do padrão
+        const stripePattern1 = document.getElementById('stripe-pattern-1');
+        const stripePattern3 = document.getElementById('stripe-pattern-3');
+        const companion = document.getElementById('companion');
+
+        let offsetX = 0; // Deslocamento inicial
+        let offsetX2 = 0;
+
+        // Função de animação do padrão
+        function animatePattern() {
+            
+            //Incrementa o deslocamento horizontal
+            offsetX += 0.5; 
+            offsetX2 += 2;
+            
+            if (offsetX > 30) {
+                offsetX = 0; // Reseta o deslocamento após um ciclo completo
+            }
+            if (offsetX2 > 380) {
+                offsetX2 = 0; // Reseta o deslocamento após um ciclo completo
+            }
+            
+
+            // Atualiza as posições individuais dos retângulos no padrão
+            stripePattern1.setAttribute('x', offsetX);  // off 1
+            stripePattern3.setAttribute('x',offsetX - 10); // off2
+            companion.setAttribute('cy', offsetX2);
+
+
+            // Reexecuta a animação
+            requestAnimationFrame(animatePattern, - offsetX);
+        }
+
+        // Inicia a animação
+        animatePattern();
+    </script>
+</body>
+</html>
